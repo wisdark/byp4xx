@@ -1,4 +1,4 @@
-***byp4xx.py***
+
 ```
     __                __ __           
    / /_  __  ______  / // / _  ___  __
@@ -7,43 +7,61 @@
 /_.___/\__, / .___/  /_/ /_/|_/_/|_|  
       /____/_/                        
 ```
-Python script for 40X responses bypassing. Methods from #bugbountytips, headers, verb tampering and user agents.
+40X bypasser in Go. Methods from #bugbountytips, headers, verb tampering, user agents and more.
 
-**Installation:**
+**Usage:** 
 ```
-git clone https://github.com/lobuhi/byp4xx.git
-cd byp4xx
-chmod u+x byp4xx.py
-./byp4xx.py
-or
-python3 byp4xx.py
-```
-or
-```
-pip install git+https://github.com/lobuhi/byp4xx.git
-```
-
-**Usage:** Start URL with http or https.
-```
-python3 byp4xx.py <cURL options> <target>
+byp4xx <cURL or byp4xx options> <URL or file>
 
 Some cURL options you may use as example:
   -L follow redirections (30X responses)
   -x <ip>:<port> to set a proxy
   -m <seconds> to set a timeout
-  -H for new headers
+  -H for new headers. Escape double quotes.
   -d for data in the POST requests body
   -...
   
  Built-in options:
-  -all Verbose mode
-  -ip <IP> Custom source IP address for headers
-  -fuzz Experimental unicode fuzzing mode. High workload! >65k requests! Watchout!
+  --all Verbose mode (by default only 2xx and 3xx codes will be prompted)
+  -t or --thread Set the maximum threads. Rate limit disabled when threads are enabled. Use carefully.
+  --rate Set the maximum reqs/sec. Only one thread enforced, for low rate limits. (5 reqs/sec by default)
+  -xV Exclude verb tampering
+  -xH Exclude headers
+  -xUA Exclude User-Agents
+  -xX Exclude extensions
+  -xD Exclude default creds
+  -xS Exclude CaSe SeNsiTiVe
+  -xM Exclude middle paths
+  -xE Exclude end paths
+  -xB Exclude #bugbountytips
 ```
-**Example:**
+**Examples:**
+
+Regular usage:
 ```
-python3 byp4xx.py https://www.google.es/test
+byp4xx http://localhost/test
 ```
+
+Avoid default creds if the response is not 401:
+```
+byp4xx -xD http://localhost/test
+```
+
+Avoid end paths and extensions if the url ends with /:
+```
+byp4xx -xE -xX http://localhost/test
+```
+
+Set 2 seconds timeout, follow redirections and use proxy
+```
+byp4xx -m 2 -L -x 127.0.0.1:8080 http://localhost/test
+```
+
+Custom headers, you should escape double quotes:
+```
+byp4xx -H \"Authorization: Bearer <JWT>\" http://localhost/test
+```
+
 **Features:**
 - Multiple HTTP verbs/methods
 - Multiple methods mentioned in #bugbountytips
@@ -54,13 +72,4 @@ python3 byp4xx.py https://www.google.es/test
     -  Extensions
     -  Default credentials
 
-**Tips:**
-- You can add proxychains to use with BurpSuite
-- Interlace is a good option for multithreading multiples URLs
-- BONUS: **[Buy me a coffee... or a pizza! Stay cool! ^_^](https://buymeacoffee.com/lobuhi)**
-
-**TO-DO:**
-- File input
-- Multithread/Multiprocessing?
-- Random vulnerable docker to test byp4xx
-- ...
+**[Buy me a coffee... or a pizza! Stay cool! ^_^](https://buymeacoffee.com/lobuhi)**
